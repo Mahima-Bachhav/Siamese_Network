@@ -26,7 +26,7 @@ import torch.nn.functional as F
 #     def forward(self, input_embedding, validation_embedding):
 #         return torch.abs(input_embedding - validation_embedding)
 
-# Define the Siamese Model architecture (should match the one used during training)
+# Siamese Model architecture
 class SiameseNetwork(nn.Module):
     def __init__(self):
         super(SiameseNetwork, self).__init__()
@@ -42,7 +42,7 @@ class SiameseNetwork(nn.Module):
         self.fc1 = nn.Linear(256 * 5 * 5, 4096)
 
         # Classifier
-        self.fc2 = nn.Linear(4096, 1)  # Single output for similarity
+        self.fc2 = nn.Linear(4096, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward_one(self, x):
@@ -58,7 +58,6 @@ class SiameseNetwork(nn.Module):
         return x
 
     def forward(self, input1, input2):
-        # Generate embeddings for both inputs
         embedding1 = self.forward_one(input1)
         embedding2 = self.forward_one(input2)
         
@@ -72,12 +71,10 @@ class SiameseNetwork(nn.Module):
 class CamApp(App):
 
     def build(self):
-        # Main layout components
         self.web_cam = KivyImage(size_hint=(1, .8))
         self.button = Button(text="Verify", on_press=self.verify, size_hint=(1, .1))
         self.verification_label = Label(text="Verification Uninitiated", size_hint=(1, .1))
 
-        # Add items to layout
         layout = BoxLayout(orientation='vertical')
         layout.add_widget(self.web_cam)
         layout.add_widget(self.button)
@@ -96,53 +93,36 @@ class CamApp(App):
         return layout
 
     def update(self, *args):
-        # Read frame from OpenCV
         ret, frame = self.capture.read()
         frame = frame[120:120 + 250, 200:200 + 250, :]
 
-        # Flip horizontally and convert image to texture
         buf = cv2.flip(frame, 0).tostring()
         img_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         img_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.web_cam.texture = img_texture
 
     def preprocess(self, img_path):
-        """
-        Preprocesses the input image: 
-        - Reads the image
-        - Converts it to PIL Image if needed
-        - Applies transformations
-        """
-        # Read the image using OpenCV
         img = cv2.imread(img_path)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert from BGR to RGB
-
-        # Convert the image from NumPy array to PIL Image
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = PILImage.fromarray(img)
 
-        # Define the transformations
         transform = transforms.Compose([
-            transforms.Resize((100, 100)),  # Resize to the required size
-            transforms.ToTensor(),          # Convert to Tensor
-            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Normalize
+            transforms.Resize((100, 100)), 
+            transforms.ToTensor(),         
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
-        # Apply transformations
-        img_tensor = transform(img).unsqueeze(0)  # Add batch dimension
+        img_tensor = transform(img).unsqueeze(0) 
         return img_tensor
 
     def verify(self, *args):
-        # Specify thresholds
         detection_threshold = 0.99
         verification_threshold = 0.8
-
-        # Capture input image from webcam
         SAVE_PATH = os.path.join('application_data', 'input_image', 'input_image.jpg')
         ret, frame = self.capture.read()
         frame = frame[120:120 + 250, 200:200 + 250, :]
         cv2.imwrite(SAVE_PATH, frame)
 
-        # Build results array
         results = []
         for image in os.listdir(os.path.join('application_data', 'verification_images')):
             input_img = self.preprocess(os.path.join('application_data', 'input_image', 'input_image.jpg'))
