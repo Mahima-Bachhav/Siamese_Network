@@ -84,10 +84,29 @@ Siamese_Network/
 
 
 ---
+## 📚 References
 
-## 🚀 How to Run
+- Siamese Neural Networks for One-shot Image Recognition  
+- Contrastive Learning and Metric Learning research papers  
+- FaceNet architecture concepts  
 
-1. Clone the repository:
-```bash
-git clone https://github.com/Mahima-Bachhav/Siamese_Network.git
+---
+
+## 🔮 Future Improvements
+
+- Triplet loss with hard negative mining  
+- Real-time face verification using webcam  
+- Model deployment using FastAPI / Streamlit  
+- Improved backbone architectures (ResNet / EfficientNet)  
+
+---
+
+## 👩‍💻 Author
+
+**Mahima Bachhav**  
+B.Tech CSE, IIT (ISM) Dhanbad  
+Interest: Computer Vision & Applied Machine Learning  
+
+🔗 GitHub: https://github.com/Mahima-Bachhav
+
 
