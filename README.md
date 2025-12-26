@@ -22,8 +22,7 @@ The project achieves **~98.5% validation accuracy** on unseen image pairs.
 
 ## 🧠 Core Concepts
 
-- Siamese Neural Networks  
-- One-shot / Few-shot Learning  
+- Siamese Neural Networks 
 - Metric Learning  
 - Contrastive Learning  
 - Face Image Preprocessing  
@@ -37,6 +36,7 @@ The architecture consists of:
 - Feature embedding extraction for each image
 - **L1 distance layer** to compute similarity
 - Fully connected layer for final prediction
+
 Image A ──► CNN ──► Embedding A
 │
 |A - B|
